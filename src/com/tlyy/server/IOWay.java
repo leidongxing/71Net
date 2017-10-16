@@ -1,4 +1,4 @@
-package com.tlyy.client;
+package com.tlyy.server;
 
 public enum IOWay {
      BIO,NIO,AIO 
