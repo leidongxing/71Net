@@ -1,26 +1,23 @@
 package com.tlyy.client;
 
-public abstract class TCPClient {
-	protected String ip;
-	protected int port;
+import java.net.Socket;
 
-	public String getIp() {
-		return ip;
-	}
+public class TCPClient {
+	private Socket socket;
 
-	public int getPort() {
-		return port;
-	}
-  
-	public TCPClient(String ip, int port) {
-		this.ip = ip;
-		this.port = port;
-	}
-	
-	public abstract void start() throws Exception;
-	
 	public String toString() {
-		return ip+" : "+port+"  "+this.toString();		
+		return socket.getInetAddress() + " : " + socket.getPort() + "  " + this.toString();
 	}
 
+	public TCPClient() {
+		socket = new Socket();
+	}
+
+	public void start() {
+
+	}
+
+	public void close() {
+
+	}
 }
