@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 
 public class TCPClient {
 	protected boolean flag;
-	private Socket client;
+	protected Socket client;
 
 	public String toString() {
 		return client.getInetAddress() + " : " + client.getPort() + "  " + this.toString();
