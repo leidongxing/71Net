@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<Configuration status="WARN" monitorInterval="1800">  
+    <properties>  
+        <property name="LOG_HOME">../logs</property>
+        <property name="ERROR_LOG_FILE_NAME">error</property>  
+        <property name="FILE_NAME">71Net</property>  
+    </properties>  
+    <Appenders>  
+        <Console name="Console" target="SYSTEM_OUT">  
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />  
+        </Console>  
+        <RollingRandomAccessFile name="MyFile"  
+            fileName="${LOG_HOME}/${FILE_NAME}.log"  
+            filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log">  
+            <PatternLayout  
+                pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />  
+            <Policies>  
+                <TimeBasedTriggeringPolicy interval="1" />  
+                <SizeBasedTriggeringPolicy size="100MB" />  
+            </Policies>  
+            <DefaultRolloverStrategy max="20" />  
+        </RollingRandomAccessFile>  
+    </Appenders>  
+  
+    <Loggers>  
+        <Logger name="mylog" level="trace" additivity="false">  
+            <AppenderRef ref="MyFile" />  
+        </Logger>  
+        <Root level="info" includeLocation="true">  
+            <AppenderRef ref="Console" />  
+        </Root>  
+    </Loggers>  
+</Configuration>  

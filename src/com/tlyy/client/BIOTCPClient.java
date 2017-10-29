@@ -9,11 +9,11 @@ public class BIOTCPClient extends TCPClient{
 	public BIOTCPClient(String ip, int port) {
 		super(ip, port);
 		flag=true;
-		// TODO Auto-generated constructor stub
 	}
 
 	public  void  start() {
 		 try {
+			System.out.println("client start");
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));   
 			PrintStream out = new PrintStream(client.getOutputStream());
 			BufferedReader buf =  new BufferedReader(new InputStreamReader(client.getInputStream())); 
@@ -22,6 +22,8 @@ public class BIOTCPClient extends TCPClient{
 				out.print(str);
 				String echo =buf.readLine();
 				System.out.println("echo: "+echo);
+				this.getClass().getName();
+	
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
