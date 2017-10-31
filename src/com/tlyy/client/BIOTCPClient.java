@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 
+import com.tlyy.log.LogUtil;
+
 public class BIOTCPClient extends TCPClient{
 	public BIOTCPClient(String ip, int port) {
 		super(ip, port);
@@ -13,7 +15,7 @@ public class BIOTCPClient extends TCPClient{
 
 	public  void  start() {
 		 try {
-			System.out.println("client start");
+			LogUtil.info("client start");
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));   
 			PrintStream out = new PrintStream(client.getOutputStream());
 			BufferedReader buf =  new BufferedReader(new InputStreamReader(client.getInputStream())); 
