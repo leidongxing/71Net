@@ -26,12 +26,11 @@ public class LogUtil {
 			StackTraceElement[] ste= e.getStackTrace();
 			StringBuilder sb = new StringBuilder();
 			sb.append(new StringBuilder().append(e.getMessage()));
-			sb.append("\r\n");
 			for(int i=0;i<ste.length;i++){				
-				 sb.append("\tat:")
+				 sb.append("\r\n\t at:")
 				.append(ste[i].getClassName()).append(".")
 				.append(ste[i].getMethodName()).append("  (LineNumber:")
-				.append(ste[i].getLineNumber()).append(") \r\n");
+				.append(ste[i].getLineNumber()).append(")");
 			}
 			error(sb.toString());
 		}
