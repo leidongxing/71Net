@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import com.tlyy.log.LogUtil;
+
 public class TCPClient {
 	protected boolean flag;
 	protected Socket client;
@@ -17,9 +19,9 @@ public class TCPClient {
 			client = new Socket(ip,port);
 			client.setSoTimeout(0);
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			LogUtil.error(e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LogUtil.error(e);
 		}	
 	}
 
