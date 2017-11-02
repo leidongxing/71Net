@@ -22,10 +22,9 @@ public class BIOTCPClient extends TCPClient{
 			while(flag) {
 				String  str = input.readLine();
 				out.print(str);
+				LogUtil.debug("send to server ",str);
 				String echo =buf.readLine();
-				System.out.println("echo: "+echo);
-				this.getClass().getName();
-	
+				LogUtil.debug("receive echo: ",echo);
 			}
 		} catch (IOException e) {
 			LogUtil.error(e);
