@@ -5,7 +5,7 @@ import java.net.Socket;
 
 import com.tlyy.log.LogCatchExceptionHandler;
 import com.tlyy.log.LogUtil;
-import com.tlyy.server.BIOThread;
+import com.tlyy.server.BIOServerThread;
 
 public class MainServer {
 	public static void main(String[]args) throws Exception {
@@ -14,7 +14,7 @@ public class MainServer {
 	    while(true){
 	    	Socket socket =serverSocket.accept();
 	    	LogUtil.debug("new client accept..",socket.getInetAddress(),":",socket.getPort());
-	    	new BIOThread(socket).start();
+	    	new BIOServerThread(socket).start();
 	    }
 	}
     
