@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import com.tlyy.log.LogUtil;
@@ -16,6 +17,7 @@ public class BIOTCPClient extends TCPClient {
 	public void start() {
 		LogUtil.info("bio client start");
 		try {
+            Socket client=new Socket(getIp(),getPort());
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 			PrintStream out = new PrintStream(client.getOutputStream());
 			BufferedReader buf = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -31,5 +33,10 @@ public class BIOTCPClient extends TCPClient {
         } catch (IOException e) {
 			LogUtil.error(e);
 		}  		
+	}
+
+	@Override
+	public void close() {
+
 	}
 }

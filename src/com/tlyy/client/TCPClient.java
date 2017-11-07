@@ -6,32 +6,39 @@ import java.net.UnknownHostException;
 
 import com.tlyy.log.LogUtil;
 
-public class TCPClient {
-	protected boolean flag;
-	protected Socket client;
-	
+public abstract  class TCPClient {
+	private  String ip;
+	private  int port;
 
-	public String toString() {
-		return client.getInetAddress() + " : " + client.getPort() + "  " + this.toString();
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String toString() {
+		return "ip: " +ip +"port: " + port +  this.toString();
 	}
 
 	public TCPClient(String ip,int port){
-		try {
-			client = new Socket(ip,port);
-			client.setSoTimeout(0);
-		} catch (UnknownHostException e) {
-			LogUtil.error(e);
-		} catch (IOException e) {
-			LogUtil.error(e);
-		}	
+		this.ip=ip;
+		this.port=port;
 	}
 
-	public void start() {
-        flag=true;
-	}
+	public abstract void start();
 
-	public void close() throws IOException {
-		flag=false;
-		client.close();
-	}
+	public abstract void close();
+
+
+
 }
