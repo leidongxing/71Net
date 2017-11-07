@@ -14,7 +14,7 @@ public class BIOTCPClient extends TCPClient {
 	}
 
 	public void start() {
-		LogUtil.info("client start");
+		LogUtil.info("bio client start");
 		try {
 			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 			PrintStream out = new PrintStream(client.getOutputStream());
