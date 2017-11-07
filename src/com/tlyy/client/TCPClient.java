@@ -9,6 +9,7 @@ import com.tlyy.log.LogUtil;
 public class TCPClient {
 	protected boolean flag;
 	protected Socket client;
+	
 
 	public String toString() {
 		return client.getInetAddress() + " : " + client.getPort() + "  " + this.toString();
