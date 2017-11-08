@@ -7,7 +7,7 @@ import com.tlyy.log.LogCatchExceptionHandler;
 import com.tlyy.log.LogUtil;
 import com.tlyy.server.BIOServerThread;
 
-public class MainServer {
+public class BIOServer {
 	public static void main(String[]args) throws Exception {
 		   Thread.setDefaultUncaughtExceptionHandler(new LogCatchExceptionHandler());
 		   ServerSocket serverSocket = new ServerSocket(7171);

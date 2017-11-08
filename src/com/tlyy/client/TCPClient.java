@@ -1,10 +1,5 @@
 package com.tlyy.client;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
-import com.tlyy.log.LogUtil;
 
 public abstract  class TCPClient {
 	private  String ip;
