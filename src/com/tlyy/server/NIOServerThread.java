@@ -63,7 +63,12 @@ public class NIOServerThread extends Thread {
 							sc.close();
 						} else if (bytesRead > 0) {
 							key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-							LogUtil.info("client send to server ",(char) buf.get());
+							if(!buf.hasRemaining()) {
+								LogUtil.warn("the buffer is fill");
+							}
+							buf.flip();
+							LogUtil.info("client send to server ",new String(buf.array()));
+						    buf.clear();
 						}
 						
 					}
