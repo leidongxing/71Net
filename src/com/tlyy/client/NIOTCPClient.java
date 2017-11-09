@@ -21,7 +21,7 @@ public class NIOTCPClient extends TCPClient {
 			sc.configureBlocking(false);
 			if (!sc.connect(new InetSocketAddress(getIp(), getPort()))) {
 				while (!sc.finishConnect()) {
-					LogUtil.info("wait for connect");
+					LogUtil.info("wait for connect ",sc);
 				}
 			}
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -33,7 +33,7 @@ public class NIOTCPClient extends TCPClient {
 			int currentSize;
 			while (true) {
 				sendStr = br.readLine();
-				LogUtil.debug("send to server: ", sendStr);
+				LogUtil.debug(sc,"  send to server: ", sendStr);
 				sendToServer = sendStr.getBytes();
 				writeBuf = ByteBuffer.wrap(sendToServer);
 				readBuf = ByteBuffer.allocate(sendToServer.length);

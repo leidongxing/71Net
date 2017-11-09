@@ -27,9 +27,17 @@ public class LogUtil {
 		}	
 	}
 	
-	public static void warn(String message){
+	public static void info(Object ...messages){
+		StringBuilder sb = new StringBuilder();
+		for(Object o:messages){
+			sb.append(o.toString());
+		}
+		defaultLog.info(sb.toString());
+	}
+	
+	public static void warn(Object message){
 		if(defaultLog.isWarnEnabled()){
-			defaultLog.warn(message);
+			defaultLog.warn(message.toString());
 		}
 	}
 	

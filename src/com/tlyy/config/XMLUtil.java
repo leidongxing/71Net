@@ -38,8 +38,6 @@ public class XMLUtil {
 		int i =1;
 		int j =16;
 		int k= i|j;
-		boolean is=k&i;
-		System.out.println(is);
 	}
 
 }
