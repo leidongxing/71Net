@@ -1,7 +1,6 @@
-package com.tlyy.main;
+package com.tlyy.round2;
 
 import com.tlyy.log.LogCatchExceptionHandler;
-import com.tlyy.server.NIOServerThread;
 
 public class NIOServer {
     public static void main(String[]args){

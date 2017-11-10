@@ -1,13 +1,12 @@
-package com.tlyy.main;
+package com.tlyy.round1;
 
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.tlyy.log.LogCatchExceptionHandler;
 import com.tlyy.log.LogUtil;
-import com.tlyy.server.BIOServerThread;
 
-public class BIOServer {
+public class BIOServerMain {
 	public static void main(String[]args) throws Exception {
 		   Thread.setDefaultUncaughtExceptionHandler(new LogCatchExceptionHandler());
 		   ServerSocket serverSocket = new ServerSocket(7171);

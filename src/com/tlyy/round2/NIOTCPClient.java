@@ -1,4 +1,4 @@
-package com.tlyy.client;
+package com.tlyy.round2;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import com.tlyy.client.TCPClient;
 import com.tlyy.log.LogUtil;
 
 public class NIOTCPClient extends TCPClient {
