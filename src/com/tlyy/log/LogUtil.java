@@ -71,4 +71,5 @@ public class LogUtil {
 			defaultLog.error(sb.toString());
 		}
 	}
+	
 }

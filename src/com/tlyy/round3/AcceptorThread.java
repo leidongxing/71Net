@@ -2,15 +2,21 @@ package com.tlyy.round3;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.tlyy.log.LogUtil;
 
 public class AcceptorThread extends Thread {
 	private static final int TIMEOUT = 3000;
+    private int MAX_SIZE = 1024;
 	private String ip;
 	private int port;
 	private Selector selector;
@@ -35,8 +41,19 @@ public class AcceptorThread extends Thread {
 		}
 	}
 	
-	private void dispatcher(){
-		
+	private void dispatcher(Set<SelectionKey> selectionKeys){
+		ReentrantLock lock = new ReentrantLock();
+		Iterator<SelectionKey> keyIter = selectionKeys.iterator();
+		while (keyIter.hasNext()) {
+			try{
+				lock.lock();
+				handleAccept(keyIter.next());
+				NIOExecutorService.executorService.execute(new NIOThread(keyIter.next()));
+				keyIter.remove();
+			}finally{
+				lock.unlock();
+			}
+		}
 	}
 	
 	public void run(){
@@ -47,15 +64,26 @@ public class AcceptorThread extends Thread {
 				LogUtil.info("wait for client");
 				continue;
 			}
-		    Iterator<SelectionKey> keyIter = selector.selectedKeys().iterator();
-			
-			
-			
-			
+			dispatcher(selector.selectedKeys());	
 		  }catch(IOException e){
 			  LogUtil.error(e);
 		  }
 		}
+	}
+	
+	private void handleAccept(SelectionKey selectKey){
+		if (selectKey.isAcceptable()) {
+			try {
+				SocketChannel sc = ((ServerSocketChannel) selectKey.channel()).accept();
+				sc.configureBlocking(false);
+				sc.register(selectKey.selector(), SelectionKey.OP_READ,ByteBuffer.allocate(MAX_SIZE));
+			} catch (ClosedChannelException e) {
+				LogUtil.error(e);
+			} catch(IOException e){
+				LogUtil.error(e);
+			}
+		}
+
 	}
 	   
 }
