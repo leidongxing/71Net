@@ -53,12 +53,14 @@ public class NIOServerThread extends Thread {
 					SelectionKey key = keyIter.next();
 					if (key.isAcceptable()) {
 						SocketChannel sc = ((ServerSocketChannel) key.channel()).accept();
+						LogUtil.info(sc);
 						sc.configureBlocking(false);
 						sc.register(key.selector(), SelectionKey.OP_READ,ByteBuffer.allocate(BUFSIZE));
 					}
 
 					if (key.isReadable()) {
 						SocketChannel sc = (SocketChannel) key.channel();
+						LogUtil.info(sc);
 						ByteBuffer buf = (ByteBuffer) key.attachment();
 						try{
 						long bytesRead = sc.read(buf);
