@@ -47,8 +47,8 @@ public class AcceptorThread extends Thread {
 		while (keyIter.hasNext()) {
 			try{
 				lock.lock();
-				handleAccept(keyIter.next());
-				NIOExecutorService.executorService.execute(new NIOThread(keyIter.next()));
+				SelectionKey key =keyIter.next();
+				handleAccept(key);
 				keyIter.remove();
 			}finally{
 				lock.unlock();
@@ -76,7 +76,7 @@ public class AcceptorThread extends Thread {
 			try {
 				SocketChannel sc = ((ServerSocketChannel) selectKey.channel()).accept();
 				sc.configureBlocking(false);
-				sc.register(selectKey.selector(), SelectionKey.OP_READ,ByteBuffer.allocate(MAX_SIZE));
+				sc.register(selectKey.selector(), SelectionKey.OP_READ | SelectionKey.OP_WRITE,ByteBuffer.allocate(MAX_SIZE));
 			} catch (ClosedChannelException e) {
 				LogUtil.error(e);
 			} catch(IOException e){

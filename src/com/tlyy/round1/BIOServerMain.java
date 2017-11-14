@@ -13,7 +13,8 @@ public class BIOServerMain {
 	    while(true){
 	    	Socket socket =serverSocket.accept();
 	    	LogUtil.debug("new client accept..",socket.getInetAddress(),":",socket.getPort());
-	    	new BIOServerThread(socket).start();
+//	    	new BIOServerThread(socket).start();
+	    	BIOThreadPool.pool.execute(new BIOServerThread(socket));
 	    }
 	}
     
