@@ -18,7 +18,6 @@ public class NIOServerThread extends Thread {
 	private int port;
 	private Selector selector;
 	private ServerSocketChannel listenChannel;
-    private byte[] receiveClient = new byte[BUFSIZE];
 
 	public NIOServerThread(String ip, int port) {
 		this.ip = ip;
@@ -49,56 +48,41 @@ public class NIOServerThread extends Thread {
 				}
 				Iterator<SelectionKey> keyIter = selector.selectedKeys().iterator();
 				while (keyIter.hasNext()) {
-					LogUtil.info("accept a persion");
 					SelectionKey key = keyIter.next();
 					if (key.isAcceptable()) {
 						SocketChannel sc = ((ServerSocketChannel) key.channel()).accept();
-						LogUtil.info(sc);
 						sc.configureBlocking(false);
 						sc.register(key.selector(), SelectionKey.OP_READ,ByteBuffer.allocate(BUFSIZE));
 					}
 
-					if (key.isReadable()) {
+					if (key.isValid() && key.isReadable()) {
 						SocketChannel sc = (SocketChannel) key.channel();
-						LogUtil.info(sc);
 						ByteBuffer buf = (ByteBuffer) key.attachment();
 						try{
 						long bytesRead = sc.read(buf);
 						if (bytesRead == -1) {
 							sc.close();
-						} else if (bytesRead > 0) {
-							key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-							if(!buf.hasRemaining()) {
-								LogUtil.warn("the buffer is fill");
-							}
-							buf.flip();
-							buf.get(receiveClient, 0,buf.limit());
-							LogUtil.info("client send to server ",new String(receiveClient));
-						    buf.clear();
+						} else if (bytesRead > 0) {	
+							key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE); 
+							LogUtil.info("client send to server ",new String(buf.array()));
 						}}
 						catch(IOException e){
 							LogUtil.error(e);
 							try {
 								sc.close();
 							} catch (IOException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
+								LogUtil.info(e1);
 							}
-						}
-						
+						}	
 					}
 
 					if (key.isValid() && key.isWritable()) {
+						SocketChannel sc = (SocketChannel) key.channel();
 						ByteBuffer buf = (ByteBuffer) key.attachment();
 						buf.flip();
-						SocketChannel sc = (SocketChannel) key.channel();
 						sc.write(buf);
-						if (!buf.hasRemaining()) {
-							key.interestOps(SelectionKey.OP_READ);
-						} else {
-						
-						}
-						buf.compact();
+						key.interestOps(SelectionKey.OP_READ);
+						buf.clear();
 					}
 					keyIter.remove();
 				}

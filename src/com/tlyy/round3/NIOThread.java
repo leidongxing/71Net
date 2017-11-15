@@ -5,28 +5,34 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.tlyy.log.LogUtil;
 
 public class NIOThread  extends Thread {
-	private SelectionKey selectKey;
-	private static final Set<SelectionKey> selectKeys = new HashSet<SelectionKey>(); 
-	
+	private final Set<SelectionKey> ownSelectKeys = new HashSet<SelectionKey>(); 
+	private final Set<SelectionKey> runSelectionKeys = new HashSet<SelectionKey>();
+	public void add(SelectionKey key){
+		ownSelectKeys.add(key);
+	}
 	@Override
 	public void run() {
 		while(true){
-			while (selectKeys.iterator().hasNext()) {
-				SelectionKey key =selectKeys.iterator().next();
-				if (key.isValid() && key.isReadable()) {
-					 handleRead(key);
-				}else if(key.isValid() && key.isWritable()){
+			Iterator<SelectionKey> keyIter =runSelectionKeys.iterator();
+			while (keyIter.hasNext()) {
+				LogUtil.info("deal nio selectionKeys: ",runSelectionKeys.size());
+				SelectionKey key =keyIter.next();
+				if(key.isValid() && key.isWritable()){
 					 handleWrite(key);
 				}
-				selectKeys.iterator().remove();
+				if (key.isValid() && key.isReadable()) {
+					 handleRead(key);
+				}
 			}
-			LogUtil.debug("add new slectkey ",selectKey);
-			selectKeys.add(selectKey);
+			runSelectionKeys.clear();
+			runSelectionKeys.addAll(ownSelectKeys);	
+			ownSelectKeys.clear();
 		}
 	}
 	
@@ -38,10 +44,7 @@ public class NIOThread  extends Thread {
 			if (bytesRead == -1){
 				sc.close();
 			}else if(bytesRead > 0){
-			    byte[] receiveClient = new byte[1024];
-			    LogUtil.info(buf.array().length);
-				buf.get(receiveClient, 0,buf.limit());
-				LogUtil.info("client send to server ",new String(receiveClient));	
+				LogUtil.info("client send to server ",new String(buf.array()));	
 			}
 		} catch (IOException e) {
 		    try {
@@ -56,8 +59,8 @@ public class NIOThread  extends Thread {
 	private void handleWrite(SelectionKey key){
 		ByteBuffer buf = (ByteBuffer) key.attachment();
 		SocketChannel sc = (SocketChannel) key.channel();
-        buf.clear();
         buf.put(new String("hello world").getBytes());
+        key.interestOps(SelectionKey.OP_READ);
 		try {
 			sc.write(buf);
 		} catch (IOException e) {
