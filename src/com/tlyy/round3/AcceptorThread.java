@@ -10,7 +10,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import com.tlyy.log.LogUtil;
 
@@ -25,6 +24,7 @@ public class AcceptorThread extends Thread {
 	public AcceptorThread(String ip, int port) {
 		this.ip = ip;
 		this.port = port;
+		this.setName("AcceptorThread");
 	}
 
 	private void initServer() {
@@ -573,17 +573,34 @@ public class AcceptorThread extends Thread {
 
 	
 	private void dispatcher(Set<SelectionKey> selectionKeys){
-		ReentrantLock lock = new ReentrantLock();
 		Iterator<SelectionKey> keyIter = selectionKeys.iterator();
 		while (keyIter.hasNext()) {
-			try{
-				lock.lock();
-				SelectionKey key =keyIter.next();
-				handleAccept(key);
-				keyIter.remove();
-			}finally{
-				lock.unlock();
+			SelectionKey key =keyIter.next();
+			if (key.isAcceptable()) {
+				try {
+					SocketChannel sc = ((ServerSocketChannel) key.channel()).accept();
+					sc.configureBlocking(false);
+					sc.register(key.selector(), SelectionKey.OP_WRITE,ByteBuffer.allocate(MAX_SIZE));
+					LogUtil.info("accept a SelectionKey");
+				} catch (ClosedChannelException e) {
+					LogUtil.error(e);
+				} catch(IOException e){
+					LogUtil.error(e);
+				} finally{
+					keyIter.remove();	
+				}
+			}	
+		}
+		if(!selectionKeys.isEmpty()){
+			int i=0;
+			for(SelectionKey key:selectionKeys){
+			     NIOThreadManager.getThreadById(i).add(key);
+			     i++;
+			     if(i>5){
+			    	i=0; 
+			     }	   
 			}
+			selectionKeys.clear();
 		}
 	}
 	
@@ -600,21 +617,5 @@ public class AcceptorThread extends Thread {
 			  LogUtil.error(e);
 		  }
 		}
-	}
-	
-	private void handleAccept(SelectionKey selectKey){
-		if (selectKey.isAcceptable()) {
-			try {
-				SocketChannel sc = ((ServerSocketChannel) selectKey.channel()).accept();
-				sc.configureBlocking(false);
-				sc.register(selectKey.selector(), SelectionKey.OP_READ | SelectionKey.OP_WRITE,ByteBuffer.allocate(MAX_SIZE));
-			} catch (ClosedChannelException e) {
-				LogUtil.error(e);
-			} catch(IOException e){
-				LogUtil.error(e);
-			}
-		}
-
-	}
-	   
+	}  
 }

@@ -29,28 +29,19 @@ public class NIOTCPClient extends TCPClient {
 			ByteBuffer writeBuf;
 			ByteBuffer readBuf;
 			String sendStr;
-			byte[] sendToServer = new byte[1024];
-			int totalSize = 0;
-			int currentSize;
+			byte[] sendToServer = new byte[]{};
 			while (true) {
 				sendStr = br.readLine();
-				LogUtil.debug(sc,"  send to server: ", sendStr);
 				sendToServer = sendStr.getBytes();
 				writeBuf = ByteBuffer.wrap(sendToServer);
+				sc.write(writeBuf);
+				LogUtil.debug(sc,"send to server: ", sendStr);
+				
 				readBuf = ByteBuffer.allocate(sendToServer.length);
-				if (writeBuf.hasRemaining()) {
-					sc.write(writeBuf);
-					LogUtil.debug("is sending to server");
+				while(readBuf.hasRemaining()){
+					sc.read(readBuf);
 				}
-				LogUtil.info("the message is receiving");
-				if((currentSize = sc.read(readBuf))==-1){
-				   LogUtil.error("Connection closed prematurely");
-				}
-				totalSize +=currentSize;
-			    if(totalSize>=sendStr.length()){
-			    	LogUtil.info("Received: " + new String(readBuf.array(),0,totalSize));
-			    	totalSize=0;
-			    }			
+				LogUtil.info("Received: " + new String(readBuf.array()));
 			}
 		} catch (IOException e) {
 			LogUtil.error(e);
