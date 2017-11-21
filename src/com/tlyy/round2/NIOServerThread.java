@@ -79,10 +79,13 @@ public class NIOServerThread extends Thread {
 					if (key.isValid() && key.isWritable()) {
 						SocketChannel sc = (SocketChannel) key.channel();
 						ByteBuffer buf = (ByteBuffer) key.attachment();
-						buf.flip();
-						sc.write(buf);
-						key.interestOps(SelectionKey.OP_READ);
 						buf.clear();
+//						buf.flip();
+						buf.put(new String("Hello World").getBytes());
+						while(buf.hasRemaining()){
+							sc.write(buf);
+						}
+						key.interestOps(SelectionKey.OP_READ);
 					}
 					keyIter.remove();
 				}
