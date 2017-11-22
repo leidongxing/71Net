@@ -12,7 +12,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.tlyy.log.LogUtil;
-
+import com.tlyy.annotation.ThreadSafe;
+@ThreadSafe
 public class AcceptorThread extends Thread {
 	private static final int TIMEOUT = 3000;
     private int MAX_SIZE = 1024;
