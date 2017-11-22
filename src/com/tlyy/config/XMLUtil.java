@@ -8,9 +8,9 @@ import java.nio.channels.FileChannel;
 import com.tlyy.log.LogUtil;
 
 public class XMLUtil {
-	public void readXMLByNIO() {
+	public void readXMLByNIO(String filePath,String fileName) {
 		try {
-			RandomAccessFile aFile = new RandomAccessFile("C:\\Users\\Administrator\\Desktop\\test.txt","rw");
+			RandomAccessFile aFile = new RandomAccessFile(filePath+fileName,"rw");
 			FileChannel inChannel = aFile.getChannel();
 			ByteBuffer buf = ByteBuffer.allocate(15);
 			int bytesRead = inChannel.read(buf);
