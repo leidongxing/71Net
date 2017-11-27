@@ -1,13 +1,24 @@
-package com.tlyy.config;
+package com.tlyy.util;
 
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+
 import com.tlyy.log.LogUtil;
 
 public class XMLUtil {
+	public static Document readXMLByDOM4J(String filePath) throws DocumentException{
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(filePath);
+		return document;
+	}
+	
+
 	public void readXMLByNIO(String filePath,String fileName) {
 		try {
 			RandomAccessFile aFile = new RandomAccessFile(filePath+fileName,"rw");
@@ -32,12 +43,4 @@ public class XMLUtil {
 		}
 
 	}
-
-	public static void main(String[] args) {
-//		new XMLUtil().readXMLByNIO();
-		int i =1;
-		int j =16;
-		int k= i|j;
-	}
-
 }

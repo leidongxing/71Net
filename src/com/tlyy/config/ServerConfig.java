@@ -4,11 +4,6 @@ public class ServerConfig {
 	private String ip;
 	private int port;
 	
-	public ServerConfig(String ip, int port){
-		this.ip=ip;
-		this.port=port;
-	}
-
 	public String getIp() {
 		return ip;
 	}
