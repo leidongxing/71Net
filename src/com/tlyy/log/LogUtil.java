@@ -28,16 +28,28 @@ public class LogUtil {
 	}
 	
 	public static void info(Object ...messages){
-		StringBuilder sb = new StringBuilder();
-		for(Object o:messages){
-			sb.append(o.toString());
+		if(defaultLog.isInfoEnabled()){
+			StringBuilder sb = new StringBuilder();
+			for(Object o:messages){
+				sb.append(o.toString());
+			}
+			defaultLog.info(sb.toString());
 		}
-		defaultLog.info(sb.toString());
 	}
 	
 	public static void warn(Object message){
 		if(defaultLog.isWarnEnabled()){
 			defaultLog.warn(message.toString());
+		}
+	}
+	
+	public static void warn(Object ...messages){
+		if(defaultLog.isWarnEnabled()){
+			StringBuilder sb = new StringBuilder();
+			for(Object o:messages){
+				sb.append(o.toString());
+			}
+			defaultLog.warn(sb.toString());
 		}
 	}
 	

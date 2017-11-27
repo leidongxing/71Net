@@ -7,15 +7,12 @@ import java.io.FileNotFoundException;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
+import com.tlyy.annotation.Bean;
+
+@Bean
 public class Log4j2Config {
-    private final String log4j2Path="config/log4j2.xml";
-    
-    public Log4j2Config(){
-    	
-    	
-    }
-    
-    public void init(){
+    private static final String log4j2Path="config/log4j2.xml";    
+    public static  void init(){
     	File log4j2File = new File(log4j2Path);
     	ConfigurationSource source;
 		try {
@@ -24,9 +21,5 @@ public class Log4j2Config {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-    }
-    
-    public static void main(String[]args) throws FileNotFoundException{
-    	new Log4j2Config().init();
     }
 }
