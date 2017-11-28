@@ -53,7 +53,7 @@ public class ConfigThread extends Thread{
 			LogUtil.error(e);
 		}
     	hotUpdate();
-    	for(Entry<String,Object> e :ConfigContext.Instance().getConfigInfo().entrySet()){
+    	for(Entry<String,Object> e :ConfigContext.getConfigInfo().entrySet()){
     		LogUtil.info(e.getKey(),e.getValue());
     		LogUtil.info("...");
     	}
@@ -90,7 +90,7 @@ public class ConfigThread extends Thread{
 						setAttributeMethod.invoke(o,ReflectUtil.castArg(child.attribute("value").getValue(), field.getType()));	
 					}
 				}
-				ConfigContext.Instance().add(idAttribute.getValue(),o);
+				ConfigContext.add(idAttribute.getValue(),o);
 			}
 
 		}
