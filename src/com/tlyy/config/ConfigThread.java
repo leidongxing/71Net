@@ -18,7 +18,9 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 import com.tlyy.log.LogUtil;
+import com.tlyy.util.ReflectUtil;
 import com.tlyy.util.StringUtil;
+import com.tlyy.util.XMLUtil;
 
 public class ConfigThread extends Thread{
 	
@@ -54,7 +56,7 @@ public class ConfigThread extends Thread{
     	hotUpdate();
     	for(Entry<String,Object> e :ConfigContext.Instance().getConfigInfo().entrySet()){
     		LogUtil.info(e.getKey(),e.getValue());
-    		LogUtil.info("");
+    		LogUtil.info("...");
     	}
      }
      
@@ -75,15 +77,14 @@ public class ConfigThread extends Thread{
      }
      
      private void xmlload() throws DocumentException,InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchFieldException, NoSuchMethodException{
-		SAXReader reader = new SAXReader();
-		Document document  = reader.read(configPath);
+		Document document  = XMLUtil.reader.read(configPath);
         Element root = document.getRootElement();
     	for(Iterator<Element> it = root.elementIterator();it.hasNext();){
 			Element e =(Element)it.next();
 			Attribute idAttribute =e.attribute("id");
 			Attribute classAttribute=e.attribute("class");
 			if(null==idAttribute||null==classAttribute){
-				LogUtil.warn(e.getName()," is Invalid bean");
+				LogUtil.warn(e.getPath(),idAttribute.getPath(),idAttribute.getValue());
 				continue;
 			}else{
 				String className=classAttribute.getValue();
@@ -94,13 +95,11 @@ public class ConfigThread extends Thread{
 						String attributeName = child.attribute("name").getValue();
 						String setAttributeMethodName = StringUtil.camelCaseSetMethod(attributeName);
 						Field field = clazz.getDeclaredField(attributeName);
-						
 						Method setAttributeMethod =clazz.getDeclaredMethod(setAttributeMethodName,field.getType());
-						field.getType().cast(child.attribute("value").getValue());
-						setAttributeMethod.invoke(o,child.attribute("value").getValue());	
+						setAttributeMethod.invoke(o,ReflectUtil.castArg(child.attribute("value").getValue(), field.getType()));	
 					}
 				}
-				ConfigContext.Instance().add(className,o);
+				ConfigContext.Instance().add(idAttribute.getValue(),o);
 			}
 
 		}
