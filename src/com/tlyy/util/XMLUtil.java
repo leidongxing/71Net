@@ -26,14 +26,15 @@ import com.tlyy.log.LogUtil;
 
 public class XMLUtil {
 	public final static SAXReader reader;
+	public final static Class<?> goElement=GokuElement.class;
 	static{
-		XMLUtil xmlUtil =new XMLUtil();
+		XMLUtil xmlUtil  = new XMLUtil();
 		Locator locator = new LocatorImpl();  
 		DocumentFactory docFactory = xmlUtil.new DocumentFactoryWithLocator(locator);  
 		reader = xmlUtil.new GokuSAXReader(docFactory, locator); 
 	}
 	
-	class GokuElement extends DefaultElement{
+	public class GokuElement extends DefaultElement{
 		private static final long serialVersionUID = 21345732721122890L;
 		private int lineNum;
 		private int colNum;

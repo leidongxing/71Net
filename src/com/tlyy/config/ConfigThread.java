@@ -15,7 +15,6 @@ import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 import com.tlyy.log.LogUtil;
 import com.tlyy.util.ReflectUtil;
@@ -66,14 +65,6 @@ public class ConfigThread extends Thread{
     	File log4j2File = new File(log4j2Path);
      	ConfigurationSource source = new ConfigurationSource(new FileInputStream(log4j2File),log4j2File);
  		Configurator.initialize(null, source);
- 		
- 	
-      
-		
-		
-	
-		
- 		
      }
      
      private void xmlload() throws DocumentException,InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchFieldException, NoSuchMethodException{
@@ -84,7 +75,7 @@ public class ConfigThread extends Thread{
 			Attribute idAttribute =e.attribute("id");
 			Attribute classAttribute=e.attribute("class");
 			if(null==idAttribute||null==classAttribute){
-				LogUtil.warn(e.getPath(),idAttribute.getPath(),idAttribute.getValue());
+				LogUtil.warn("element is invalid  line number: ",((XMLUtil.GokuElement) e).getLineNumber());
 				continue;
 			}else{
 				String className=classAttribute.getValue();
