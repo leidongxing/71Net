@@ -3,11 +3,7 @@ package com.tlyy.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Iterator;
-import java.util.Map.Entry;
 
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -24,76 +20,68 @@ import com.tlyy.util.XMLUtil;
 public class ConfigThread extends Thread{
 	
 	 private final String configPath="config/config.xml";
-	 private static final String log4j2Path="config/log4j2.xml"; 
+	 private static final String log4j2Path="config/log4j2.xml";
+	 
+	 public ConfigThread(){
+		 this.setName("ConfigThread");
+	 }
 	
      @Override
      public void run(){
-    	try{
-    		init();
-    		xmlload();
-    	}catch(FileNotFoundException e){
-    		e.printStackTrace();
-    	}catch(DocumentException e){
-    		LogUtil.error(e);
-    	} catch (InstantiationException e) {
-			LogUtil.error(e);
-		} catch (IllegalAccessException e) {
-		    LogUtil.error(e);
-		} catch (ClassNotFoundException e) {
-		    LogUtil.error(e);
-		} catch (IllegalArgumentException e) {
-			LogUtil.error(e);
-		} catch (InvocationTargetException e) {
-			LogUtil.error(e);
-		} catch (SecurityException e) {
-			LogUtil.error(e);
-		} catch (NoSuchFieldException e) {
-			LogUtil.error(e);
-		} catch (NoSuchMethodException e){
-			LogUtil.error(e);
-		}
+        init();
     	hotUpdate();
-    	for(Entry<String,Object> e :ConfigContext.getConfigInfo().entrySet()){
-    		LogUtil.info(e.getKey(),e.getValue());
-    		LogUtil.info("...");
-    	}
+    	
      }
      
      
      
-     private void init() throws FileNotFoundException, DocumentException{
-    	File log4j2File = new File(log4j2Path);
-     	ConfigurationSource source = new ConfigurationSource(new FileInputStream(log4j2File),log4j2File);
- 		Configurator.initialize(null, source);
+     private void init(){
+    	log4jLoad();
+    	configLoad();
      }
-     
-     private void xmlload() throws DocumentException,InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException, InvocationTargetException, SecurityException, NoSuchFieldException, NoSuchMethodException{
-		Document document  = XMLUtil.reader.read(configPath);
+     private void log4jLoad(){
+    	try{
+     		File log4j2File = new File(log4j2Path);
+          	ConfigurationSource source = new ConfigurationSource(new FileInputStream(log4j2File),log4j2File);
+      		Configurator.initialize(null, source);
+     	}catch(FileNotFoundException e){
+     		LogUtil.error(e);
+     		LogUtil.error("log4j load failed");
+     	}
+     }
+
+     private void configLoad() {
+		Document document = null;
+		try {
+			document = XMLUtil.reader.read(configPath);
+		} catch (DocumentException e) {
+			LogUtil.error(e);
+	        LogUtil.info("config load failed");
+		}
         Element root = document.getRootElement();
     	for(Iterator<Element> it = root.elementIterator();it.hasNext();){
-			Element e =(Element)it.next();
-			Attribute idAttribute =e.attribute("id");
-			Attribute classAttribute=e.attribute("class");
+			Element element =(Element)it.next();
+			Attribute idAttribute =element.attribute("id");
+			Attribute classAttribute=element.attribute("class");
 			if(null==idAttribute||null==classAttribute){
-				LogUtil.warn("element is invalid  line number: ",((XMLUtil.GokuElement) e).getLineNumber());
+				LogUtil.warn("element is invalid  line number: ",((XMLUtil.GokuElement) element).getLineNumber());
 				continue;
 			}else{
 				String className=classAttribute.getValue();
-				Class<?> clazz =Class.forName(className);
-				Object o =clazz.newInstance();
-				for(Element child:e.elements()){
+				Object o = ReflectUtil.newObjByClassName(className);
+				for(Element child:element.elements()){
 					if("property".equals(child.getName())){
 						String attributeName = child.attribute("name").getValue();
+						String attributeValue = child.attribute("value").getValue();
 						String setAttributeMethodName = StringUtil.camelCaseSetMethod(attributeName);
-						Field field = clazz.getDeclaredField(attributeName);
-						Method setAttributeMethod =clazz.getDeclaredMethod(setAttributeMethodName,field.getType());
-						setAttributeMethod.invoke(o,ReflectUtil.castArg(child.attribute("value").getValue(), field.getType()));	
+						ReflectUtil.initializeObj(o,setAttributeMethodName,attributeName,attributeValue);
 					}
 				}
 				ConfigContext.add(idAttribute.getValue(),o);
+				LogUtil.info("config load bean: ",idAttribute.getValue());
 			}
-
 		}
+    	LogUtil.info("config load success");
      }
      
  
