@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
-<bean id="ServerConfig"
-      class="com.tlyy.config.ServerConfig">
-	  <property name="ip" value="127.0.0.1"/>
-	  <property name="port" value="7171"/>
-</bean>
-<bean id="client"></bean>
-</Configuration>
