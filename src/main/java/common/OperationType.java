@@ -18,9 +18,9 @@ public enum OperationType {
     KEEPALIVE(2, KeepaliveOperation.class, KeepaliveOperationResult.class),
     ORDER(3, OrderOperation.class, OrderOperationResult.class);
 
-    private  int opCode;
-    private  Class<? extends Operation> operationClazz;
-    private  Class<? extends OperationResult> operationResultClazz;
+    private final int opCode;
+    private final Class<? extends Operation> operationClazz;
+    private final Class<? extends OperationResult> operationResultClazz;
 
     OperationType(int opCode, Class<? extends Operation> operationClazz, Class<? extends OperationResult> responseClass) {
         this.opCode = opCode;

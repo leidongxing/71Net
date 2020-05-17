@@ -8,7 +8,7 @@ import common.OperationResult;
  * created on 2020/5/17
  */
 public class KeepaliveOperation extends Operation {
-    private long time;
+    private final long time;
 
     public KeepaliveOperation() {
         this.time = System.nanoTime();
