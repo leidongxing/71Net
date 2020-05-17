@@ -18,7 +18,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.OK;
  * @author LeiDongxing
  * created on 2020/5/17
  */
-public class HttpHelloWroldServerHandler extends SimpleChannelInboundHandler<HttpObject> {
+public class HttpHelloWorldServerHandler extends SimpleChannelInboundHandler<HttpObject> {
     private static final byte[] CONTENT = "helloworld".getBytes();
 
     @Override
